@@ -3,14 +3,16 @@
 declare(strict_types=1);
 
 namespace App\Controllers;
-use App\Core\View;
 
 class HomeController
 {
     public function index(): string
     {
-        $view = new View();
+        return view('home/home', ['pageTitle' => 'Hello, World!']);
+    }
 
-        return $view->render('home', ['pageTitle' => 'Hello, World!']);
+    public function about(): string
+    {
+        return view('home/about', ['pageTitle' => 'About Us']);
     }
 }
