@@ -30,3 +30,10 @@ if(!function_exists('route')) {
         return $router->pathFor($name);
     }
 }
+
+if (!function_exists('auth')) {
+    function auth(): ?\App\Models\User
+    {
+        return \App\Core\Auth::user();
+    }
+}

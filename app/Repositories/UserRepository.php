@@ -10,6 +10,28 @@ use App\Models\User;
 
 class UserRepository extends Repository
 {
+
+    public function findById(int $id): ?User
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT id, name, email, role FROM users WHERE id = :id'
+        );
+
+        $statement->execute(['id' => $id]);
+        $row = $statement->fetch();
+
+        if ($row === false) {
+            return null;
+        }
+
+        return new User(
+            (int) $row['id'],
+            $row['name'],
+            $row['email'],
+            UserRole::from((int) $row['role'])
+        );
+    }
+
     /** @return User[] */
     public function findAll(): array
     {
@@ -32,7 +54,7 @@ class UserRepository extends Repository
         return $users;
     }
 
-    /** @return User by email */
+    /** @return User */
     public function findByEmail(string $email): ?User
     {
         $statement = $this->pdo->prepare(
@@ -43,7 +65,7 @@ class UserRepository extends Repository
 
         $row = $statement->fetch();
 
-        if($row === false) return null;
+        if ($row === false) return null;
 
         return new User(
             (int) $row['id'],
