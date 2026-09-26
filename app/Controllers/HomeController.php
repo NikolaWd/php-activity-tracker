@@ -10,9 +10,4 @@ class HomeController
     {
         return view('home/home', ['pageTitle' => 'Hello, World!']);
     }
-
-    public function about(): string
-    {
-        return view('home/about', ['pageTitle' => 'About Us']);
-    }
 }

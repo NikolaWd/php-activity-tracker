@@ -1,7 +1,6 @@
 <?php require __DIR__ . '/../layout/header.php'; ?>
 <?php require __DIR__ . '/../layout/nav.php'; ?>
 
-<main>
     <h1>
         Welcome to User page
         <?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?>
@@ -27,6 +26,5 @@
         </table>
     <?php endif; ?>
     
-</main>
 
 <?php require __DIR__ . '/../layout/footer.php'; ?>

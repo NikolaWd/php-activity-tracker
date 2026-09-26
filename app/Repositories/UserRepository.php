@@ -31,4 +31,25 @@ class UserRepository extends Repository
 
         return $users;
     }
+
+    /** @return User by email */
+    public function findByEmail(string $email): ?User
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT id, name, email, role FROM users WHERE email = :email'
+        );
+
+        $statement->execute(['email' => $email]);
+
+        $row = $statement->fetch();
+
+        if($row === false) return null;
+
+        return new User(
+            (int) $row['id'],
+            $row['name'],
+            $row['email'],
+            UserRole::from((int) $row['role'])
+        );
+    }
 }
