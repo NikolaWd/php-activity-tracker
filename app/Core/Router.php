@@ -8,9 +8,26 @@ class Router
 {
     private array $getRoutes = [];
 
-    public function get(string $path, array $handler): void
+    public function get(string $path, array $handler): Route
     {
-        $this->getRoutes[$path] = $handler;
+        $route = new Route($path, $handler);
+        
+        $this->getRoutes[$path] = $route;
+
+        return $route;
+    }
+
+    public function pathFor(string $name): string
+    {
+        foreach ($this->getRoutes as $route) {
+            if ($route->getName() === $name) {
+                return $route->getPath();
+            }
+        }
+
+        throw new \InvalidArgumentException(
+            "Route with name '{$name}' not found."
+        );
     }
 
     public function dispatch(): void
@@ -28,7 +45,8 @@ class Router
             return;
         }
 
-        [$controllerClass, $action] = $this->getRoutes[$path];
+        $route = $this->getRoutes[$path];
+        [$controllerClass, $action] = $route->getHandler();
 
         $controller = new $controllerClass();
 

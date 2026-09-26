@@ -17,3 +17,16 @@ if(!function_exists('view')) {
         return ob_get_clean();
     }
 }
+
+if(!function_exists('route')) {
+    function route(string $name): string
+    {
+        global $router;
+
+        if(!$router instanceof \App\Core\Router) {
+            throw new \RuntimeException("Router instance not found.");
+        }
+
+        return $router->pathFor($name);
+    }
+}
