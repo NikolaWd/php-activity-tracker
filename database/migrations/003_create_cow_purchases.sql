@@ -1,0 +1,6 @@
+CREATE TABLE cow_purchases (
+    user_id INT UNSIGNED PRIMARY KEY,
+    purchases_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
