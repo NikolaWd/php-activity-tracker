@@ -4,13 +4,85 @@ A small PHP 8.1 / MySQL MVC application. Users can register, sign in, visit Page
 
 ## Run locally
 
-1. Copy `.env.example` to `.env` and set the database name, a **non-root** `DB_USERNAME`, `DB_PASSWORD`, and `DB_ROOT_PASSWORD`.
-2. Start the containers: `docker compose up -d --build`
-3. Create tables: `docker compose exec app php bin/migrate.php`
-4. Add demo data: `docker compose exec app php bin/seed.php`
-5. Open <http://localhost:9000>.
+You need Docker with the Docker Compose plugin. Make sure ports **9000** (website) and **3310** (MySQL from your computer) are available. Run all commands below from the project root. On GitHub, each fenced code block has a copy button.
 
-The seeder adds three admins (`admin1@seed.test` through `admin3@seed.test`), 50 users (`user01@seed.test` through `user50@seed.test`), and 140 demo events. All demo accounts use the password `DemoPassword123!`. These are **development-only credentials**.
+### 1. Create the environment file
+
+```bash
+cp -n .env.example .env
+```
+
+`-n` preserves an existing `.env` file. Open `.env` in your editor and fill in all four values. For a local demo, you can use:
+
+```dotenv
+DB_DATABASE=test_mvc
+DB_USERNAME=mvc_user
+DB_PASSWORD=local_user_password
+DB_ROOT_PASSWORD=local_root_password
+```
+
+`DB_USERNAME` **must not be `root`**: the MySQL container creates it as a regular database user. Docker Compose passes these settings to the containers. Keep `.env` private; it is excluded from Git.
+
+### 2. Build and start the containers
+
+```bash
+docker compose up -d --build
+```
+
+The `app` container serves the site, and the `db` container runs MySQL. On the first start, MySQL may need a few seconds to initialize. Check that both services are running:
+
+```bash
+docker compose ps
+```
+
+If `db` has stopped, inspect its startup messages before continuing:
+
+```bash
+docker compose logs db
+```
+
+### 3. Install PHP dependencies
+
+```bash
+docker compose exec app composer install
+```
+
+This generates `vendor/autoload.php`, which the application and CLI scripts need. The `vendor/` directory is not stored in Git.
+
+### 4. Create the database tables
+
+```bash
+docker compose exec app php bin/migrate.php
+```
+
+The script applies the SQL files from `database/migrations/` in order. If MySQL is still starting, wait a moment and run this command again. On later runs, already-applied migrations print `Skipping`.
+
+### 5. Insert demo users and events
+
+```bash
+docker compose exec app php bin/seed.php
+```
+
+This runs the user seeder before the event seeder, so the event foreign keys have users to reference. Re-running it skips existing demo records.
+
+### 6. Open the application
+
+Visit <http://localhost:9000> and sign in with:
+
+```text
+Email:    admin1@seed.test
+Password: DemoPassword123!
+```
+
+For a regular user, use `user01@seed.test` with the same password. The seeders create three admins, 50 regular users and 140 demo events. These credentials are **for local development only**.
+
+To stop the containers without deleting the database volume:
+
+```bash
+docker compose down
+```
+
+MySQL keeps its data in a Docker volume. Changing the `.env` credentials later does not automatically update accounts already created in that volume; do not delete the volume just to troubleshoot a connection issue.
 
 ## Pages and access
 
