@@ -3,7 +3,7 @@
 
     <h1>
         Welcome to User page
-        <?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?>
+        <?= e($pageTitle) ?>
     </h1>
     <p>This is a index page for users.</p>
 
@@ -22,10 +22,10 @@
     <tbody>
         <?php foreach ($users as $user): ?>
             <tr>
-                <th scope="row"><?= $user->getId() ?></th>
-                <td><?= htmlspecialchars($user->getName(), ENT_QUOTES, 'UTF-8') ?></td>
-                <td><?= htmlspecialchars($user->getEmail(), ENT_QUOTES, 'UTF-8') ?></td>
-                <td><?= htmlspecialchars($user->getRole()->name, ENT_QUOTES, 'UTF-8') ?></td>
+                <th scope="row"><?= e($user->getId()) ?></th>
+                <td><?= e($user->getName()) ?></td>
+                <td><?= e($user->getEmail()) ?></td>
+                <td><?= e($user->getRole()->name) ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>

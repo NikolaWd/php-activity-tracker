@@ -3,26 +3,26 @@
 
     <h1>
         Register page
-        <?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?>
+        <?= e($pageTitle) ?>
     </h1>
 
     <?php if ($error !== null): ?>
-        <p role="alert" style="color: red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
+        <p role="alert" style="color: red;"><?= e($error) ?></p>
     <?php endif; ?>
 
-    <form class="mt-4" method="post" action="<?= route('register.post') ?>">
+    <form class="mt-4" method="post" action="<?= e(route('register.post')) ?>">
         <input
             type="hidden"
             name="csrf_token"
-            value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>"
+            value="<?= e(csrf_token()) ?>"
         >
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
-            <input type="text" name="name" value="<?= htmlspecialchars($name, ENT_QUOTES, 'UTF-8') ?>" class="form-control" id="name" aria-describedby="name">
+            <input type="text" name="name" value="<?= e($name) ?>" class="form-control" id="name" aria-describedby="name">
         </div>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" name="email" value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <input type="email" name="email" value="<?= e($email) ?>" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
             <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
         </div>
         <div class="mb-3">

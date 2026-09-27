@@ -3,7 +3,7 @@
 
     <h1>
         Dobrodošli na našu početnu stranicu!
-        <?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?>
+        <?= e($pageTitle) ?>
     </h1>
     <p>Ovo je početna stranica naše web aplikacije.</p>
 

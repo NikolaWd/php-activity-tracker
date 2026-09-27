@@ -3,23 +3,23 @@
 
 <h1>
     Login page
-    <?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?>
+    <?= e($pageTitle) ?>
 </h1>
 <p>Ovo je login stranica naše web aplikacije.</p>
 
 <?php if ($error !== null): ?>
-    <p role="alert" style="color: red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
+    <p role="alert" style="color: red;"><?= e($error) ?></p>
 <?php endif; ?>
 
-<form method="post" action="<?= route('login.post'); ?>">
+<form method="post" action="<?= e(route('login.post')) ?>">
     <input 
         hidden
-        value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>"
+        value="<?= e(csrf_token()) ?>"
         name="csrf_token"
     />
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email address</label>
-        <input type="email" value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <input type="email" value="<?= e($email) ?>" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
         <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
     </div>
     <div class="mb-3">

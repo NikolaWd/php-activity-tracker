@@ -13,10 +13,6 @@ class AuthController
 {
     public function login(): string
     {
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
-
         return view('auth/login', [
             'pageTitle' => 'Login page',
             'error' => null,
@@ -67,10 +63,6 @@ class AuthController
 
     public function register(): string
     {
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
-
         return view('auth/register', [
             'pageTitle' => 'Register',
             'error' => null,
