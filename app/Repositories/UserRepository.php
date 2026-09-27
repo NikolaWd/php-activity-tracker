@@ -54,6 +54,24 @@ class UserRepository extends Repository
         return $users;
     }
 
+    public function findAllUsers(): array
+    {
+        $statement = $this->pdo->query('SELECT id, name, email, role FROM users WHERE role = 2');
+        
+        $rows = $statement->fetchAll();
+        $users = [];
+
+        foreach($rows as $row)
+            $users[] = new User(
+                    (int) $row['id'],
+                    $row['name'],
+                    $row['email'],
+                    UserRole::from((int) $row['role'])
+                );
+
+        return $users;
+    }
+
     /** @return User */
     public function findByEmail(string $email): ?User
     {

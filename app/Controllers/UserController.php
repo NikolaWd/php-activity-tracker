@@ -10,7 +10,7 @@ class UserController
 {
     public function index()
     {
-        $users = (new UserRepository())->findAll();
+        $users = (new UserRepository())->findAllUsers();
 
         return view('users/index', ['users' => $users, 'pageTitle' => 'User List']);
     }
