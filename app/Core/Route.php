@@ -7,6 +7,7 @@ namespace App\Core;
 class Route
 {
     private ?string $name = null;
+    private array $middlewares = [];
 
     public function __construct(
         private string $path, private array $handler
@@ -17,6 +18,24 @@ class Route
         $this->name = $name;
 
         return $this;
+    }
+
+    public function middleware(array $middlewares): self
+    {
+        foreach ($middlewares as $middleware) {
+            if (!$middleware instanceof Middleware) {
+                throw new \InvalidArgumentException('Middleware must implement ' . Middleware::class);
+            }
+
+            $this->middlewares[] = $middleware;
+        }
+
+        return $this;
+    }
+
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
     }
 
     public function getPath(): string

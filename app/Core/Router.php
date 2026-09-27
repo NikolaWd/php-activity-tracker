@@ -72,6 +72,13 @@ class Router
         }
 
         $route = $this->routes[$requestMethod][$path];
+
+        foreach ($route->getMiddlewares() as $middleware) {
+            if (!$middleware->handle()) {
+                return;
+            }
+        }
+
         [$controllerClass, $action] = $route->getHandler();
 
         $controller = new $controllerClass();

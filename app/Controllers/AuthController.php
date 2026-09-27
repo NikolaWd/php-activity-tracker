@@ -11,6 +11,25 @@ use App\Repositories\UserRepository;
 
 class AuthController
 {
+    public function logout(): string
+    {
+        $token = $_POST['csrf_token'] ?? null;
+
+        if (
+            !is_string($token)
+            || !isset($_SESSION['csrf_token'])
+            || !hash_equals($_SESSION['csrf_token'], $token)
+        ) {
+            http_response_code(403);
+            return 'Invalid form token.';
+        }
+
+        Auth::logout();
+
+        header('Location: ' . route('home'), true, 303);
+        return '';
+    }
+
     public function login(): string
     {
         return view('auth/login', [

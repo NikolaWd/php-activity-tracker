@@ -1,4 +1,8 @@
-<?php $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/'; ?>
+<?php
+
+use App\Enums\UserRole;
+
+ $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/'; ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
@@ -11,9 +15,11 @@
             >Home
             </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link <?= $currentPath === route('users') ? 'active' : '' ?>" href="<?= e(route('users')) ?>">Users</a>
-        </li>
+        <?php if(auth() && auth()->getRole() === UserRole::Admin): ?>
+          <li class="nav-item">
+            <a class="nav-link <?= $currentPath === route('users') ? 'active' : '' ?>" href="<?= e(route('users')) ?>">Users</a>
+          </li>
+        <?php endif; ?>
         <?php if(!auth()): ?>
         <li>
           <a href="<?= e(route('login')) ?>" class="nav-link <?= $currentPath === route('login') ? 'active' : '' ?>">Login</a>
@@ -32,7 +38,7 @@
     </div>
     <?php if(auth()): ?>
     <div>
-      <form action="" method="post">
+      <form action="<?= e(route('logout')) ?>" method="post">
         <input
           hidden
           name="csrf_token"
