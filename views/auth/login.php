@@ -5,7 +5,7 @@
     Login page
     <?= e($pageTitle) ?>
 </h1>
-<p>Ovo je login stranica naše web aplikacije.</p>
+<p>This is the login page of our web application.</p>
 
 <?php if ($error !== null): ?>
     <p role="alert" style="color: red;"><?= e($error) ?></p>

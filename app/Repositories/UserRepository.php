@@ -7,6 +7,7 @@ namespace App\Repositories;
 use App\Core\Repository;
 use App\Enums\UserRole;
 use App\Models\User;
+use PDO;
 
 class UserRepository extends Repository
 {
@@ -54,20 +55,42 @@ class UserRepository extends Repository
         return $users;
     }
 
-    public function findAllUsers(): array
+    public function countUsers(): int
     {
-        $statement = $this->pdo->query('SELECT id, name, email, role FROM users WHERE role = 2');
-        
+        $statement = $this->pdo->prepare('SELECT COUNT(*) FROM users WHERE role = :role');
+        $statement->bindValue(':role', UserRole::User->value, PDO::PARAM_INT);
+        $statement->execute();
+
+        return (int) $statement->fetchColumn();
+    }
+
+    /** @return User[] */
+    public function findAllUsers(int $limit, int $offset): array
+    {
+        if ($limit < 1 || $offset < 0) {
+            throw new \InvalidArgumentException('Invalid pagination values.');
+        }
+
+        $statement = $this->pdo->prepare(
+            'SELECT id, name, email, role FROM users
+             WHERE role = :role ORDER BY id ASC LIMIT :limit OFFSET :offset'
+        );
+        $statement->bindValue(':role', UserRole::User->value, PDO::PARAM_INT);
+        $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $statement->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $statement->execute();
+
         $rows = $statement->fetchAll();
         $users = [];
 
-        foreach($rows as $row)
+        foreach ($rows as $row) {
             $users[] = new User(
-                    (int) $row['id'],
-                    $row['name'],
-                    $row['email'],
-                    UserRole::from((int) $row['role'])
-                );
+                (int) $row['id'],
+                $row['name'],
+                $row['email'],
+                UserRole::from((int) $row['role'])
+            );
+        }
 
         return $users;
     }

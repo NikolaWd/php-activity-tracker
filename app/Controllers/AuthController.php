@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Actions\User\RegisterUser;
+use App\Actions\Event\RecordEvent;
 use App\Core\Auth;
+use App\Enums\EventAction;
 use PDOException;
 use App\Repositories\UserRepository;
 
@@ -13,17 +15,12 @@ class AuthController
 {
     public function logout(): string
     {
-        $token = $_POST['csrf_token'] ?? null;
-
-        if (
-            !is_string($token)
-            || !isset($_SESSION['csrf_token'])
-            || !hash_equals($_SESSION['csrf_token'], $token)
-        ) {
+        if (!valid_csrf_token()) {
             http_response_code(403);
             return 'Invalid form token.';
         }
 
+        (new RecordEvent())->execute(Auth::user()->getId(), EventAction::Logout);
         Auth::logout();
 
         header('Location: ' . route('home'), true, 303);
@@ -42,13 +39,7 @@ class AuthController
 
     public function login_post()
     {
-        $token = $_POST['csrf_token'] ?? null;
-
-        if (
-            !is_string($token)
-            || !isset($_SESSION['csrf_token'])
-            || !hash_equals($_SESSION['csrf_token'], $token)
-        ) {
+        if (!valid_csrf_token()) {
             http_response_code(403);
             return 'Invalid form token.';
         }
@@ -74,6 +65,7 @@ class AuthController
             ]);
         }
 
+        (new RecordEvent())->execute($credentials['id'], EventAction::Login);
         Auth::login($credentials['id']);
 
         header('Location: ' . route('home'), true, 303);
@@ -92,13 +84,7 @@ class AuthController
 
     public function register_post(): string
     {
-        $token = $_POST['csrf_token'] ?? null;
-
-        if (
-            !is_string($token)
-            || !isset($_SESSION['csrf_token'])
-            || !hash_equals($_SESSION['csrf_token'], $token)
-        ) {
+        if (!valid_csrf_token()) {
             http_response_code(403);
             return 'Invalid form token.';
         }

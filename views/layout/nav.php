@@ -2,51 +2,38 @@
 
 use App\Enums\UserRole;
 
- $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/'; ?>
+$currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+$currentUser = auth();
+?>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-            <a
-                class="nav-link <?= $currentPath === route('home') ? 'active' : '' ?>"
-                href="<?= e(route('home')) ?>"
-            >Home
-            </a>
-        </li>
-        <?php if(auth() && auth()->getRole() === UserRole::Admin): ?>
-          <li class="nav-item">
-            <a class="nav-link <?= $currentPath === route('users') ? 'active' : '' ?>" href="<?= e(route('users')) ?>">Users</a>
-          </li>
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid d-flex flex-wrap gap-3">
+        <div class="navbar-nav flex-row flex-wrap gap-3">
+            <a class="nav-link <?= $currentPath === route('home') ? 'active' : '' ?>" href="<?= e(route('home')) ?>">Home</a>
+
+            <?php if ($currentUser !== null): ?>
+                <a class="nav-link <?= $currentPath === route('page-a') ? 'active' : '' ?>" href="<?= e(route('page-a')) ?>">Page A</a>
+                <a class="nav-link <?= $currentPath === route('page-b') ? 'active' : '' ?>" href="<?= e(route('page-b')) ?>">Page B</a>
+                <a class="nav-link <?= $currentPath === route('reports') ? 'active' : '' ?>" href="<?= e(route('reports')) ?>">Reports</a>
+
+                <?php if ($currentUser->getRole() === UserRole::Admin): ?>
+                    <a class="nav-link <?= $currentPath === route('users') ? 'active' : '' ?>" href="<?= e(route('users')) ?>">Users</a>
+                    <a class="nav-link <?= $currentPath === route('statistics') ? 'active' : '' ?>" href="<?= e(route('statistics')) ?>">Statistics</a>
+                <?php endif; ?>
+            <?php else: ?>
+                <a class="nav-link <?= $currentPath === route('login') ? 'active' : '' ?>" href="<?= e(route('login')) ?>">Login</a>
+                <a class="nav-link <?= $currentPath === route('register') ? 'active' : '' ?>" href="<?= e(route('register')) ?>">Register</a>
+            <?php endif; ?>
+        </div>
+
+        <?php if ($currentUser !== null): ?>
+            <div class="d-flex flex-wrap align-items-center gap-2 text-white">
+                <span>Welcome: <?= e($currentUser->getName()) ?> | <?= e($currentUser->getEmail()) ?> | <?= e($currentUser->getRole()->name) ?></span>
+                <form action="<?= e(route('logout')) ?>" method="post" class="m-0">
+                    <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+                    <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
+                </form>
+            </div>
         <?php endif; ?>
-        <?php if(!auth()): ?>
-        <li>
-          <a href="<?= e(route('login')) ?>" class="nav-link <?= $currentPath === route('login') ? 'active' : '' ?>">Login</a>
-        </li>
-        <li>
-          <a href="<?= e(route('register')) ?>" class="nav-link <?= $currentPath === route('register') ? 'active' : '' ?>">Register</a>
-        </li>
-        <?php else: ?>
-          <div style="width: fit-content; margin-right: auto; display:flex; margin-top: 8px; margin-left: 5px; background: white; color: black;" class="p-2">
-            <div>Welcome: <?= e(auth()->getName()) ?> | </div>
-            <div>Email: <?= e(auth()->getEmail()) ?> | </div>
-            <div>Role: <?= e(auth()->getRole()->name) ?></div>
-          </div>
-        <?php endif; ?>
-      </ul>
     </div>
-    <?php if(auth()): ?>
-    <div>
-      <form action="<?= e(route('logout')) ?>" method="post">
-        <input
-          hidden
-          name="csrf_token"
-          value="<?= e(csrf_token()) ?>"
-        />
-        <button type="submit">Logout</button>
-      </form>
-    </div>
-    <?php endif; ?>
-  </div>
 </nav>

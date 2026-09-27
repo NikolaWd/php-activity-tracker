@@ -49,6 +49,18 @@ if (!function_exists('csrf_token')) {
     }
 }
 
+if (!function_exists('valid_csrf_token')) {
+    function valid_csrf_token(): bool
+    {
+        $token = $_POST['csrf_token'] ?? null;
+
+        return is_string($token)
+            && isset($_SESSION['csrf_token'])
+            && is_string($_SESSION['csrf_token'])
+            && hash_equals($_SESSION['csrf_token'], $token);
+    }
+}
+
 if (!function_exists('e')) {
     function e(string|int|float|null $value): string
     {

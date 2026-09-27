@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Actions\User;
 
+use App\Actions\Event\RecordEvent;
 use App\Core\Database;
+use App\Enums\EventAction;
 use App\Enums\UserRole;
 use PDO;
+use Throwable;
 
 class RegisterUser
 {
@@ -30,18 +33,29 @@ class RegisterUser
             throw new \InvalidArgumentException('Password must have at least 8 characters.');
         }
 
-        $statement = $this->pdo->prepare(
-            'INSERT INTO users (name, email, password, role)
-             VALUES (:name, :email, :password, :role)'
-        );
+        $this->pdo->beginTransaction();
 
-        $statement->execute([
-            'name' => $name,
-            'email' => $email,
-            'password' => password_hash($password, PASSWORD_DEFAULT),
-            'role' => UserRole::User->value,
-        ]);
+        try {
+            $statement = $this->pdo->prepare(
+                'INSERT INTO users (name, email, password, role)
+                 VALUES (:name, :email, :password, :role)'
+            );
 
-        return (int) $this->pdo->lastInsertId();
+            $statement->execute([
+                'name' => $name,
+                'email' => $email,
+                'password' => password_hash($password, PASSWORD_DEFAULT),
+                'role' => UserRole::User->value,
+            ]);
+
+            $userId = (int) $this->pdo->lastInsertId();
+            (new RecordEvent())->execute($userId, EventAction::Registration);
+
+            $this->pdo->commit();
+            return $userId;
+        } catch (Throwable $exception) {
+            $this->pdo->rollBack();
+            throw $exception;
+        }
     }
 }

@@ -2,9 +2,9 @@
 <?php require __DIR__ . '/../layout/nav.php'; ?>
 
     <h1>
-        Dobrodošli na našu početnu stranicu!
+        Welcome to our home page!
         <?= e($pageTitle) ?>
     </h1>
-    <p>Ovo je početna stranica naše web aplikacije.</p>
+    <p>This is the home page of our web application.</p>
 
 <?php require __DIR__ . '/../layout/footer.php'; ?>

@@ -1,7 +1,7 @@
 </main>
 
 <footer class="container ">
-    <p>&copy; <?= date('Y') ?> Moj MVC projekat</p>
+    <p>&copy; <?= date('Y') ?> Fast Corporation</p>
 </footer>
 
     <!-- Optional JavaScript; choose one of the two! -->
