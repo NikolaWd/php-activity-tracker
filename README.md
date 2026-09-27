@@ -15,8 +15,8 @@ cp -n .env.example .env
 `-n` preserves an existing `.env` file. Open `.env` in your editor and fill in all four values. For a local demo, you can use:
 
 ```dotenv
-DB_DATABASE=test_mvc
-DB_USERNAME=mvc_user
+DB_DATABASE=test_db
+DB_USERNAME=db_user
 DB_PASSWORD=local_user_password
 DB_ROOT_PASSWORD=local_root_password
 ```
@@ -29,7 +29,7 @@ DB_ROOT_PASSWORD=local_root_password
 docker compose up -d --build
 ```
 
-The `app` container serves the site, and the `db` container runs MySQL. On the first start, MySQL may need a few seconds to initialize. Check that both services are running:
+The `app` container serves the site, and the `db` container runs MySQL. On the first start, MySQL may need a few seconds to initialize. Compose waits for the database healthcheck before starting `app`. Check that `db` is healthy and `app` is running:
 
 ```bash
 docker compose ps
@@ -55,7 +55,7 @@ This generates `vendor/autoload.php`, which the application and CLI scripts need
 docker compose exec app php bin/migrate.php
 ```
 
-The script applies the SQL files from `database/migrations/` in order. If MySQL is still starting, wait a moment and run this command again. On later runs, already-applied migrations print `Skipping`.
+The script applies the SQL files from `database/migrations/` in order. Once `app` has started, the database should be ready. On later runs, already-applied migrations print `Skipping`.
 
 ### 5. Insert demo users and events
 
