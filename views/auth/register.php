@@ -7,7 +7,7 @@
     </h1>
 
     <?php if ($error !== null): ?>
-        <p role="alert"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
+        <p role="alert" style="color: red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
     <?php endif; ?>
 
     <form class="mt-4" method="post" action="<?= route('register.post') ?>">

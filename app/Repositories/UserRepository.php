@@ -74,4 +74,24 @@ class UserRepository extends Repository
             UserRole::from((int) $row['role'])
         );
     }
+
+    /** @return array{id: int, password: string}|null */
+    public function findCredentialsByEmail(string $email): ?array
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT id, password FROM users WHERE email = :email'
+        );
+
+        $statement->execute(['email' => $email]);
+        $row = $statement->fetch();
+
+        if ($row === false) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $row['id'],
+            'password' => $row['password'],
+        ];
+    }
 }
